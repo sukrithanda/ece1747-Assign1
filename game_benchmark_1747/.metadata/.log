@@ -1,0 +1,59 @@
+!SESSION 2015-10-17 11:37:52.517 -----------------------------------------------
+eclipse.buildId=debbuild
+java.version=1.7.0_79
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Command-line arguments:  -os linux -ws gtk -arch x86_64
+
+!ENTRY org.eclipse.osgi 2 1 2015-10-17 11:38:54.239
+!MESSAGE NLS unused message: ConvertTargetAction_No_Converter in: org.eclipse.cdt.managedbuilder.internal.ui.Messages
+
+!ENTRY org.eclipse.cdt.core 4 0 2015-10-17 11:39:18.024
+!MESSAGE Error: Invalid project description.
+!STACK 1
+org.eclipse.core.internal.resources.ResourceException: Invalid project description.
+	at org.eclipse.core.internal.resources.Project.checkDescription(Project.java:175)
+	at org.eclipse.core.internal.resources.Project.setDescription(Project.java:1334)
+	at org.eclipse.core.internal.resources.Project.setDescription(Project.java:1378)
+	at org.eclipse.cdt.core.CProjectNature.addNature(CProjectNature.java:78)
+	at org.eclipse.cdt.core.CProjectNature.addCNature(CProjectNature.java:44)
+	at org.eclipse.cdt.core.CCorePlugin$2.run(CCorePlugin.java:870)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2344)
+	at org.eclipse.cdt.core.CCorePlugin.createCDTProject(CCorePlugin.java:848)
+	at org.eclipse.cdt.core.CCorePlugin.createCDTProject(CCorePlugin.java:838)
+	at org.eclipse.cdt.managedbuilder.ui.wizards.NewMakeProjFromExisting$1.execute(NewMakeProjFromExisting.java:94)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation$1.run(WorkspaceModifyOperation.java:106)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2344)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation.run(WorkspaceModifyOperation.java:118)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
+Contains: OK
+Contains: /nfs/ug/homes-1/h/handasuk/Documents/assign1-ECE1747/game_benchmark_1747/src overlaps the location of another project: 'src'
+!SUBENTRY 1 org.eclipse.core.resources 4 77 2015-10-17 11:39:18.025
+!MESSAGE Invalid project description.
+!SUBENTRY 2 unknown 0 0 2015-10-17 11:39:18.025
+!MESSAGE OK
+!SUBENTRY 2 org.eclipse.core.resources 4 77 2015-10-17 11:39:18.025
+!MESSAGE /nfs/ug/homes-1/h/handasuk/Documents/assign1-ECE1747/game_benchmark_1747/src overlaps the location of another project: 'src'
+
+!ENTRY org.eclipse.cdt.core 4 0 2015-10-17 11:39:18.053
+!MESSAGE Error: Invalid project description.
+!STACK 1
+org.eclipse.core.internal.resources.ResourceException: Invalid project description.
+	at org.eclipse.core.internal.resources.Project.checkDescription(Project.java:175)
+	at org.eclipse.core.internal.resources.Project.setDescription(Project.java:1334)
+	at org.eclipse.core.internal.resources.Project.setDescription(Project.java:1378)
+	at org.eclipse.cdt.core.CProjectNature.addNature(CProjectNature.java:78)
+	at org.eclipse.cdt.core.CCProjectNature.addCCNature(CCProjectNature.java:28)
+	at org.eclipse.cdt.managedbuilder.ui.wizards.NewMakeProjFromExisting$1.execute(NewMakeProjFromExisting.java:98)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation$1.run(WorkspaceModifyOperation.java:106)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2344)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation.run(WorkspaceModifyOperation.java:118)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
+Contains: OK
+Contains: /nfs/ug/homes-1/h/handasuk/Documents/assign1-ECE1747/game_benchmark_1747/src overlaps the location of another project: 'src'
+!SUBENTRY 1 org.eclipse.core.resources 4 77 2015-10-17 11:39:18.053
+!MESSAGE Invalid project description.
+!SUBENTRY 2 unknown 0 0 2015-10-17 11:39:18.053
+!MESSAGE OK
+!SUBENTRY 2 org.eclipse.core.resources 4 77 2015-10-17 11:39:18.053
+!MESSAGE /nfs/ug/homes-1/h/handasuk/Documents/assign1-ECE1747/game_benchmark_1747/src overlaps the location of another project: 'src'
