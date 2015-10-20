@@ -296,7 +296,7 @@ void WorldMap::balance_spread()
 
 
 	//region bin for each thread
-	printf("in spread!!!!!");
+	printf("in spread \n");
 
 	Region* remap;
 	int new_thread_id;
@@ -316,22 +316,39 @@ void WorldMap::balance_spread()
 	}
 
 
+
+	for (int i = 0; i < sd->num_threads; i++ ){
+			int current_bin_count = 0;
+			list<Region*>::iterator pi;			//iterator through the list of regions in the bin
+			for ( pi = bins[i].begin(); pi != bins[i].end(); pi++ ){
+
+				Region * x = *pi;
+				current_bin_count += x-> n_pls;  // get the player count for each region
+			}
+			printf("bin : %d \n", i);
+			printf("total bin player count: %d \n", current_bin_count);
+	}
+
 }
 
 int WorldMap::find_lightest_region_bin(){
-	printf("finding lightest load!!!!!");
+	//printf("/***finding lightest load BEGIN *****/ \n");
+	//printf("number of thread: %d \n", sd->num_threads);
 
 	int lowest_num_players = INT_MAX;
 	int current_bin_count;
 	int bin_index = 0;
 	for (int i = 0; i < sd->num_threads; i++ ){
-
+		current_bin_count = 0;
 		list<Region*>::iterator pi;			//iterator through the list of regions in the bin
 		for ( pi = bins[i].begin(); pi != bins[i].end(); pi++ ){
 
 			Region * x = *pi;
-			current_bin_count += x -> n_pls;  // get the player count for each region
+			current_bin_count += x-> n_pls;  // get the player count for each region
 
+		/*	printf("bin : %d, REGION[%d][%d]", i, x->pos.x, x->pos.y);
+			printf("thread id: %d, number of players : %d \n", x->layout, x->n_pls);
+			printf("current total bin player count: %d \n", current_bin_count);*/
 
 		}
 
@@ -342,13 +359,17 @@ int WorldMap::find_lightest_region_bin(){
 
 
 	}
+	//printf("lowest bin count %d, bin index: %d \n", lowest_num_players, bin_index);
 
+	//printf("/***finding lightest load END *****/ \n");
 	return bin_index;
+
+
 
 }
 
 void WorldMap::initialize_bins(){
-	printf("clearing bins");
+	printf("clearing bins \n");
 
 	for (int i = 0; i < sd->num_threads; i++ ){
 		bins[i].clear();
@@ -370,6 +391,6 @@ void WorldMap::balance()
 	if( !strcmp( sd->algorithm_name, "lightest" ) )		return balance_lightest();
 	if( !strcmp( sd->algorithm_name, "spread" ) )		return balance_spread();
 	
-	printf("Algorithm %s is not implemented.\n", sd->algorithm_name);
+	printf("Algorithm %s is not implemented. \n", sd->algorithm_name);
 	return;
 }
