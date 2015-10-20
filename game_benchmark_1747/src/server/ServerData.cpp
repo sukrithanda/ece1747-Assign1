@@ -84,7 +84,7 @@ void ServerData::dataFromConfigurator( Configurator &conf )
 	this->quest_max		= conf.getIntAttribute("quest.max") * 1000;
 	this->quest_between	= conf.getIntAttribute("quest.between") * 1000;
 	this->quest_bonus	= conf.getIntAttribute("quest.bonus");
-	if( this->quest_min <= 0 || this->quest_max <= this->quest_min ||
+	if( this->quest_min <= 0 || /*this->quest_max <= this->quest_min ||*/
 		this->quest_bonus < 0 || this->quest_bonus > 100 ||
 		this->quest_between <= 0 )
 		throw "Invalid or incomplete values for quest properties";
