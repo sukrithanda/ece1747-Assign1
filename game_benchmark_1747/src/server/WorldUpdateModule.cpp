@@ -19,6 +19,9 @@
 #include "ServerData.h"
 #include "WorldUpdateModule.h"
 
+#include <fstream>
+#include <cstdio>
+
 /***************************************************************************************************
 *
 * Constructors and setup methods
@@ -64,20 +67,39 @@ void WorldUpdateModule::run()
     Uint32 start_quest = SDL_GetTicks() + sd->quest_between;
     Uint32 end_quest   = start_quest + sd->quest_min + rand() % (sd->quest_max-sd->quest_min+1);
     	
-	printf("WorldUpdateModule started\n");
+    bool quest_started = false;
 
+    // Open file descriptors for each CSV file we should write. Write the headers.
+    std::ofstream processing_file;
+    char filename [25];
+    sprintf (filename, "processing_time/%d_processing_time.csv", t_id);
+	processing_file.open(filename, std::ofstream::out | std::ofstream::trunc);
+	processing_file << "thread,iterations,processing_time" << std::endl;
+
+	int iterations = 0;
+
+	printf("WorldUpdateModule started\n");
 	/* main loop */
 	while ( true )
 	{
+		iterations++;
+
 		start_time = SDL_GetTicks();
 		timeout	= sd->regular_update_interval;
+
+		int num_req = 0;
+		int total_processing_time = 0;
 		
         while( (m = comm->receive( timeout, t_id )) != NULL )
         {
+        	int processing_start_time = SDL_GetTicks();
+
             addr = m->getAddress();
             type = m->getType();
             p = sd->wm.findPlayer( addr, t_id );
             
+            num_req++;
+
             switch ( type )
             {
                 case MESSAGE_CS_JOIN:		handleClientJoinRequest(p, addr); 						break;
@@ -103,38 +125,55 @@ void WorldUpdateModule::run()
             delete m;
             timeout = sd->regular_update_interval - (SDL_GetTicks() - start_time);
             if( ((int)timeout) < 0 )	timeout = 0;
+
+            total_processing_time += SDL_GetTicks()-processing_start_time;
         }
-        
+
         SDL_WaitBarrier(barrier);
         
+        processing_file << t_id << "," << iterations << "," << total_processing_time << endl;
+        
+        printf("%d - Time spent processing requests: %d\n", t_id, total_processing_time);
+
         if( t_id == 0 )
         {
         	sd->wm.balance();
         	
         	if( rand() % 100 < 10 )		sd->wm.regenerateObjects();
         	
-        	sd->send_start_quest = 0; sd->send_end_quest = 0;        	
-			if( start_time > start_quest )
-			{
-				start_quest = end_quest + sd->quest_between;
-				sd->quest_pos.x = (rand() % sd->wm.n_regs.x) * CLIENT_MATRIX_SIZE + MAX_CLIENT_VIEW;
-				sd->quest_pos.y = (rand() % sd->wm.n_regs.y) * CLIENT_MATRIX_SIZE + MAX_CLIENT_VIEW;
-				sd->send_start_quest = 1;
-				if( sd->display_quests )		printf("New quest %d,%d\n", sd->quest_pos.x, sd->quest_pos.y);
-			}			
-			if( start_time > end_quest )
-			{
-				sd->wm.rewardPlayers( sd->quest_pos );
-				end_quest = start_quest + sd->quest_min + rand() % (sd->quest_max-sd->quest_min+1);
-				sd->send_end_quest = 1;
-				if( sd->display_quests )		printf("Quest over\n");				
-			}
+        	if (!quest_started){
+        		quest_started = true;
+        		start_quest = end_quest + sd->quest_between;
+        		        					sd->quest_pos.x = 0;
+        		        					sd->quest_pos.y = 0;
+        		        					sd->send_start_quest = 1;
+        		        					if( sd->display_quests )		printf("New quest %d,%d\n", sd->quest_pos.x, sd->quest_pos.y);
+
+        	}
+
+
+//        	sd->send_start_quest = 0; sd->send_end_quest = 0;
+//			if( start_time > start_quest )
+//			{
+//				start_quest = end_quest + sd->quest_between;
+//				sd->quest_pos.x = (rand() % sd->wm.n_regs.x) * CLIENT_MATRIX_SIZE + MAX_CLIENT_VIEW;
+//				sd->quest_pos.y = (rand() % sd->wm.n_regs.y) * CLIENT_MATRIX_SIZE + MAX_CLIENT_VIEW;
+//				sd->send_start_quest = 1;
+//				if( sd->display_quests )		printf("New quest %d,%d\n", sd->quest_pos.x, sd->quest_pos.y);
+//			}
+//			if( start_time > end_quest )
+//			{
+//				sd->wm.rewardPlayers( sd->quest_pos );
+//				end_quest = start_quest + sd->quest_min + rand() % (sd->quest_max-sd->quest_min+1);
+//				sd->send_end_quest = 1;
+//				if( sd->display_quests )		printf("Quest over\n");
+//			}
         }
         
         SDL_WaitBarrier(barrier);
         
         wui = SDL_GetTicks() - start_time;
-        avg_wui = ( avg_wui < 0 ) ? wui : ( avg_wui * 0.95 + (double)wui * 0.05 );        
+        avg_wui = ( avg_wui < 0 ) ? wui : ( avg_wui * 0.95 + (double)wui * 0.05 );
         start_time = SDL_GetTicks();
         
 		/* send updates to clients (map state) */
@@ -155,8 +194,11 @@ void WorldUpdateModule::run()
 	
 	    SDL_WaitBarrier(barrier);
 	    rui = SDL_GetTicks() - start_time;    
-	    avg_rui = ( avg_rui < 0 ) ? rui : ( avg_rui * 0.95 + (double)rui * 0.05 );	    
+	    avg_rui = ( avg_rui < 0 ) ? rui : ( avg_rui * 0.95 + (double)rui * 0.05 );
 	}
+
+	// Close any open files
+	processing_file.close();
 }
 
 /***************************************************************************************************
