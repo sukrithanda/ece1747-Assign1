@@ -275,8 +275,6 @@ void WorldMap::balance_lightest()
    ignores neighbors. will shed to remote server if necessary
 
 */
-	
-
 }
 
 void WorldMap::balance_spread()
@@ -296,8 +294,6 @@ void WorldMap::balance_spread()
 
 
 	//region bin for each thread
-	printf("in spread \n");
-
 	Region* remap;
 	int new_thread_id;
 	int bin_index;
@@ -315,8 +311,6 @@ void WorldMap::balance_spread()
 			}
 	}
 
-
-
 	for (int i = 0; i < sd->num_threads; i++ ){
 			int current_bin_count = 0;
 			list<Region*>::iterator pi;			//iterator through the list of regions in the bin
@@ -325,52 +319,33 @@ void WorldMap::balance_spread()
 				Region * x = *pi;
 				current_bin_count += x-> n_pls;  // get the player count for each region
 			}
-			printf("bin : %d \n", i);
-			printf("total bin player count: %d \n", current_bin_count);
 	}
 
 }
 
 int WorldMap::find_lightest_region_bin(){
-	//printf("/***finding lightest load BEGIN *****/ \n");
-	//printf("number of thread: %d \n", sd->num_threads);
-
 	int lowest_num_players = INT_MAX;
 	int current_bin_count;
 	int bin_index = 0;
+
 	for (int i = 0; i < sd->num_threads; i++ ){
 		current_bin_count = 0;
 		list<Region*>::iterator pi;			//iterator through the list of regions in the bin
 		for ( pi = bins[i].begin(); pi != bins[i].end(); pi++ ){
-
 			Region * x = *pi;
 			current_bin_count += x-> n_pls;  // get the player count for each region
-
-		/*	printf("bin : %d, REGION[%d][%d]", i, x->pos.x, x->pos.y);
-			printf("thread id: %d, number of players : %d \n", x->layout, x->n_pls);
-			printf("current total bin player count: %d \n", current_bin_count);*/
-
 		}
 
 		if (current_bin_count < lowest_num_players){
 			lowest_num_players = current_bin_count;
 			bin_index = i;
 		}
-
-
 	}
-	//printf("lowest bin count %d, bin index: %d \n", lowest_num_players, bin_index);
 
-	//printf("/***finding lightest load END *****/ \n");
 	return bin_index;
-
-
-
 }
 
 void WorldMap::initialize_bins(){
-	printf("clearing bins \n");
-
 	for (int i = 0; i < sd->num_threads; i++ ){
 		bins[i].clear();
 	}

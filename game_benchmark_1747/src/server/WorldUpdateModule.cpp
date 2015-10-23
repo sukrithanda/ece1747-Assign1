@@ -66,9 +66,7 @@ void WorldUpdateModule::run() {
 	Uint32 end_quest = start_quest + sd->quest_min
 			+ rand() % (sd->quest_max - sd->quest_min + 1);
 
-//    bool quest_started = false;
-
-// Open file descriptors for each CSV file we should write. Write the headers.
+	// Open file descriptors for each CSV file we should write. Write the headers.
 	std::ofstream processing_file;
 	char processing_filename[25];
 	sprintf(processing_filename, "./processing_time/%d_processing_time.csv",
@@ -152,7 +150,6 @@ void WorldUpdateModule::run() {
 		processing_file << t_id << "," << iterations << ","
 				<< total_processing_time << "," << num_req << endl;
 
-//        printf("%d - Time spent processing requests: %d\n", t_id, total_processing_time);
 
 		if (t_id == 0) {
 			sd->wm.balance();
@@ -160,25 +157,15 @@ void WorldUpdateModule::run() {
 			if (rand() % 100 < 10)
 				sd->wm.regenerateObjects();
 
-//        	if (!quest_started){
-//        		quest_started = true;
-//        		start_quest = end_quest + sd->quest_between;
-//        		        					sd->quest_pos.x = 0;
-//        		        					sd->quest_pos.y = 0;
-//        		        					sd->send_start_quest = 1;
-//        		        					if( sd->display_quests )		printf("New quest %d,%d\n", sd->quest_pos.x, sd->quest_pos.y);
-//
-//        	}
-
 			sd->send_start_quest = 0;
 			sd->send_end_quest = 0;
 			if (start_time > start_quest) {
 				start_quest = end_quest + sd->quest_between;
-				// 42,59
+				// Always set the quest to occur at (42,59) so that experimental runs are consistent
 				sd->quest_pos.x = 42;
 				sd->quest_pos.y = 59;
-//				sd->quest_pos.x = (rand() % sd->wm.n_regs.x) * CLIENT_MATRIX_SIZE + MAX_CLIENT_VIEW;
-//				sd->quest_pos.y = (rand() % sd->wm.n_regs.y) * CLIENT_MATRIX_SIZE + MAX_CLIENT_VIEW;
+				// sd->quest_pos.x = (rand() % sd->wm.n_regs.x) * CLIENT_MATRIX_SIZE + MAX_CLIENT_VIEW;
+				// sd->quest_pos.y = (rand() % sd->wm.n_regs.y) * CLIENT_MATRIX_SIZE + MAX_CLIENT_VIEW;
 				sd->send_start_quest = 1;
 				if (sd->display_quests)
 					printf("New quest %d,%d\n", sd->quest_pos.x,
